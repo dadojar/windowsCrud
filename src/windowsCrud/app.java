@@ -8,12 +8,13 @@ import javax.swing.JLabel;
 import controllers.SupplierController;
 import models.Supplier;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.GridLayout;
+
 import javax.swing.JTextField;
 import java.awt.SystemColor;
 import java.awt.Font;
+
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.util.Random;

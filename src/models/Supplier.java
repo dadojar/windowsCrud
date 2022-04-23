@@ -1,15 +1,29 @@
 package models;
 
+import java.io.Serializable;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+
+@Entity
+@Table(name="supplier")
 public class Supplier {
 
 
-
+	@Id
+	@Column(name = "id", unique = true)
 	private Integer id;
 	
+	@Column(name = "name", unique = true)
 	private String name;
 	
+	@Column(name = "address", unique = true)
 	private String address;
 	
+	@Column(name = "telephone", unique = true)
 	private Integer telephone;
 
 	public Supplier(Integer id, String name, String address, Integer telephone) {
