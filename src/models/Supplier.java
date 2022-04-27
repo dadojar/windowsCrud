@@ -33,6 +33,8 @@ public class Supplier {
 		this.address = address;
 		this.telephone = telephone;
 	}
+	
+	public Supplier() {}
 
 
 	

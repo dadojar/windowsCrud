@@ -1,12 +1,11 @@
 package controllers;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.Statement;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.Vector;
 
 import models.Supplier;
-import persistence.DBConnection;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -40,6 +39,14 @@ public class SupplierController {
 		
 		System.out.println("End add supplier");
 	}
+
+	public List<Supplier> getAllSupplier() {
+		EntityManager em = ENTITY_MANAGER_FACTOR.createEntityManager();
+		List<Supplier> resultSupplierList = em.createQuery("SELECT s FROM Supplier s", Supplier.class).getResultList(); 
+		return resultSupplierList;
+		
+	}
+	
 	
 	/*
 	public void addSupplier(Supplier s) {

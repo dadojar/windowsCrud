@@ -6,7 +6,7 @@ import java.sql.SQLException;
 
 
 
-/**
+/** NOT USED
  * singleton class to have one connection in all the system
  * **/
 public class DBConnection {
