@@ -32,6 +32,8 @@ import java.util.Optional;
 import java.util.Random;
 import java.util.Vector;
 import java.awt.event.ActionEvent;
+import java.awt.Color;
+import javax.swing.border.BevelBorder;
 
 // http://cswire.blogspot.com/2017/11/make-simple-crud-java-ui-application.html
 
@@ -43,6 +45,7 @@ public class app {
 	private JTextField telephoneSupplierTF;
 	
 	private SupplierController supplierController;
+	private JTable table_1;
 
 
 	/**
@@ -92,27 +95,24 @@ public class app {
 		frame.getContentPane().setLayout(null);
 		
 		
-		JFrame frame1 = new JFrame();
-		// create a JTABLE to show prevoius object
+        
+        JScrollPane scrollPane = new JScrollPane();
+        scrollPane.setViewportBorder(new BevelBorder(BevelBorder.RAISED, new Color(244, 247, 252), SystemColor.inactiveCaptionBorder, SystemColor.inactiveCaption, SystemColor.inactiveCaption));
+		scrollPane.setBounds(50, 50, 600, 200);
+		frame.getContentPane().add(scrollPane);
+		
 		String colSupplier[] = {"Name","Address","Telephone"};
 		DefaultTableModel tableModel = new DefaultTableModel(colSupplier, 0);
 		JTable table = new JTable(tableModel);
+		table.setForeground(Color.BLACK);
 	
-		
 		for(Supplier s: loadSupplierData ) {
 			String[] curr = { s.getName(), s.getAddress(),s.getTelephone()+""}; 
 			tableModel.addRow(curr);
 		}
-		
-		
-		 
-		JPanel panel = new JPanel();
-        panel.setBorder(BorderFactory.createTitledBorder( BorderFactory.createEtchedBorder(), "ODI Rankings", TitledBorder.CENTER, TitledBorder.TOP));
-     
-        panel.add(new JScrollPane(table));
-        frame1.add(panel);
-        frame1.setSize(550, 400);
-        frame1.setVisible(true);
+		scrollPane.setViewportView(table);
+		frame.setBounds(100, 100, 720, 494);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 
 		
@@ -155,8 +155,8 @@ public class app {
 		lblNewLabel_3.setFont(new Font("Calibri", Font.BOLD, 22));
 		lblNewLabel_3.setBounds(20, 10, 219, 44);
 		frame.getContentPane().add(lblNewLabel_3);
-		frame.setBounds(100, 100, 720, 494);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		
+		
 	}
 	
 	
