@@ -16,6 +16,7 @@ import models.Supplier;
 import javax.swing.JTextField;
 import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableColumn;
 
 import java.awt.SystemColor;
 import java.awt.Font;
@@ -34,6 +35,8 @@ import java.util.Vector;
 import java.awt.event.ActionEvent;
 import java.awt.Color;
 import javax.swing.border.BevelBorder;
+import javax.swing.UIManager;
+import javax.swing.SwingConstants;
 
 // http://cswire.blogspot.com/2017/11/make-simple-crud-java-ui-application.html
 
@@ -95,65 +98,68 @@ public class app {
 		frame.getContentPane().setLayout(null);
 		
 		
-        
+        // **** TABLE
         JScrollPane scrollPane = new JScrollPane();
-        scrollPane.setViewportBorder(new BevelBorder(BevelBorder.RAISED, new Color(244, 247, 252), SystemColor.inactiveCaptionBorder, SystemColor.inactiveCaption, SystemColor.inactiveCaption));
-		scrollPane.setBounds(50, 50, 600, 200);
+        scrollPane.setViewportBorder(UIManager.getBorder("CheckBoxMenuItem.border"));
+       
+		scrollPane.setBounds(50, 80, 857, 268);
 		frame.getContentPane().add(scrollPane);
 		
 		String colSupplier[] = {"Name","Address","Telephone"};
 		DefaultTableModel tableModel = new DefaultTableModel(colSupplier, 0);
 		JTable table = new JTable(tableModel);
-		table.setForeground(Color.BLACK);
+		table.getTableHeader().setBackground(new Color (224,238,237));
 	
 		for(Supplier s: loadSupplierData ) {
 			String[] curr = { s.getName(), s.getAddress(),s.getTelephone()+""}; 
 			tableModel.addRow(curr);
 		}
 		scrollPane.setViewportView(table);
-		frame.setBounds(100, 100, 720, 494);
+		frame.setBounds(100, 100, 1000, 700);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 
 		
+		// ******* CREATE
 		nameSupplierTF = new JTextField();
-		nameSupplierTF.setBounds(156, 273, 166, 19);
+		nameSupplierTF.setBounds(156, 415, 166, 19);
 		frame.getContentPane().add(nameSupplierTF);
 		nameSupplierTF.setColumns(10);
 		
-		JLabel lblNewLabel = new JLabel("name");
-		lblNewLabel.setFont(new Font("Tahoma", Font.PLAIN, 15));
-		lblNewLabel.setBounds(51, 276, 83, 16);
+		JLabel lblNewLabel = new JLabel("Name");
+		lblNewLabel.setFont(new Font("Comic Sans MS", Font.PLAIN, 15));
+		lblNewLabel.setBounds(50, 414, 83, 16);
 		frame.getContentPane().add(lblNewLabel);
 		
 		addressSupplierTF = new JTextField();
-		addressSupplierTF.setBounds(156, 311, 166, 19);
+		addressSupplierTF.setBounds(156, 460, 166, 19);
 		frame.getContentPane().add(addressSupplierTF);
 		addressSupplierTF.setColumns(10);
 		
-		JLabel lblNewLabel_1 = new JLabel("telephone");
-		lblNewLabel_1.setFont(new Font("Tahoma", Font.PLAIN, 15));
-		lblNewLabel_1.setBounds(51, 346, 66, 13);
+		JLabel lblNewLabel_1 = new JLabel("Telephone");
+		lblNewLabel_1.setFont(new Font("Comic Sans MS", Font.PLAIN, 15));
+		lblNewLabel_1.setBounds(50, 508, 83, 13);
 		frame.getContentPane().add(lblNewLabel_1);
 		
-		JLabel lblNewLabel_2 = new JLabel("address");
-		lblNewLabel_2.setFont(new Font("Tahoma", Font.PLAIN, 15));
-		lblNewLabel_2.setBounds(51, 312, 83, 13);
+		JLabel lblNewLabel_2 = new JLabel("Address");
+		lblNewLabel_2.setFont(new Font("Comic Sans MS", Font.PLAIN, 15));
+		lblNewLabel_2.setBounds(50, 461, 83, 13);
 		frame.getContentPane().add(lblNewLabel_2);
 		
 		telephoneSupplierTF = new JTextField();
-		telephoneSupplierTF.setBounds(156, 345, 166, 19);
+		telephoneSupplierTF.setBounds(156, 502, 166, 19);
 		frame.getContentPane().add(telephoneSupplierTF);
 		telephoneSupplierTF.setColumns(10);
 		
 		JButton btnNewButton = new JButton("Add");
 		btnNewButton.addActionListener(new SupplierListener());
-		btnNewButton.setBounds(47, 394, 85, 21);
+		btnNewButton.setBounds(50, 558, 85, 21);
 		frame.getContentPane().add(btnNewButton);
 		
 		JLabel lblNewLabel_3 = new JLabel("Supplier management");
-		lblNewLabel_3.setFont(new Font("Calibri", Font.BOLD, 22));
-		lblNewLabel_3.setBounds(20, 10, 219, 44);
+		lblNewLabel_3.setHorizontalAlignment(SwingConstants.CENTER);
+		lblNewLabel_3.setFont(new Font("Comic Sans MS", Font.PLAIN, 20));
+		lblNewLabel_3.setBounds(350, 10, 219, 44);
 		frame.getContentPane().add(lblNewLabel_3);
 		
 		
