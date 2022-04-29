@@ -49,7 +49,9 @@ public class app {
 	
 	private SupplierController supplierController;
 	private JTable table_1;
+	private JTable table;
 
+	private DefaultTableModel tableModel;
 
 	/**
 	 * Launch the application.
@@ -78,13 +80,7 @@ public class app {
 
 	
 	
-	private List<Supplier> loadSupplierData(){
-	  System.out.print("start load supplier data");
-	  List<Supplier> allSupplierList = supplierController.getAllSupplier();
-	  System.out.println("Start getall supplier size : " + allSupplierList.size());
-	  return allSupplierList;
-	}
-	
+
 	
 	
 	
@@ -92,33 +88,14 @@ public class app {
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize(List<Supplier> loadSupplierData) {
+		System.out.println("Start initialization GUI");
 		frame = new JFrame();
 		frame.getContentPane().setFont(new Font("Tahoma", Font.BOLD, 14));
 		frame.getContentPane().setBackground(SystemColor.inactiveCaptionBorder);
 		frame.getContentPane().setLayout(null);
 		
-		
-        // **** TABLE
-        JScrollPane scrollPane = new JScrollPane();
-        scrollPane.setViewportBorder(UIManager.getBorder("CheckBoxMenuItem.border"));
-       
-		scrollPane.setBounds(50, 80, 857, 268);
-		frame.getContentPane().add(scrollPane);
-		
-		String colSupplier[] = {"Name","Address","Telephone"};
-		DefaultTableModel tableModel = new DefaultTableModel(colSupplier, 0);
-		JTable table = new JTable(tableModel);
-		table.getTableHeader().setBackground(new Color (224,238,237));
-	
-		for(Supplier s: loadSupplierData ) {
-			String[] curr = { s.getName(), s.getAddress(),s.getTelephone()+""}; 
-			tableModel.addRow(curr);
-		}
-		scrollPane.setViewportView(table);
-		frame.setBounds(100, 100, 1000, 700);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		
-
+		// populate table
+        populateTable(loadSupplierData);
 		
 		// ******* CREATE
 		nameSupplierTF = new JTextField();
@@ -164,6 +141,31 @@ public class app {
 		
 		
 	}
+
+	/**
+	 * @param populateTable
+	 */
+	private void populateTable(List<Supplier> loadSupplierData) {
+		// **** TABLE
+        JScrollPane scrollPane = new JScrollPane();
+        scrollPane.setViewportBorder(UIManager.getBorder("CheckBoxMenuItem.border"));
+       
+		scrollPane.setBounds(50, 80, 857, 268);
+		frame.getContentPane().add(scrollPane);
+		
+		String colSupplier[] = {"Name","Address","Telephone"};
+		tableModel = new DefaultTableModel(colSupplier, 0);
+		table = new JTable(tableModel);
+		table.getTableHeader().setBackground(new Color (224,238,237));
+	
+		for(Supplier s: loadSupplierData ) {
+			String[] curr = { s.getName(), s.getAddress(),s.getTelephone()+""}; 
+			tableModel.addRow(curr);
+		}
+		scrollPane.setViewportView(table);
+		frame.setBounds(100, 100, 1000, 700);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+	}
 	
 	
 	
@@ -171,10 +173,10 @@ public class app {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			System.out.println("2 - Action Performed Intercepted the add function!");
 			String ac = e.getActionCommand();			
 			switch(ac) {
-			case "Add": addSupplier();
+			case "Add": 
+				addSupplier();
 			break;
 			}
 		}
@@ -183,12 +185,31 @@ public class app {
 			Integer id = new Random().nextInt(100000);
 			String sTelephone = telephoneSupplierTF.getText();
 			int telephone = Integer.parseInt(sTelephone);
-			Supplier supplier = new Supplier( id, nameSupplierTF.getText(), addressSupplierTF.getText(), telephone );
+			Supplier supplier = new Supplier( id, nameSupplierTF.getText(), addressSupplierTF.getText(), telephone );			
+			//add to table and clean text field
+			Object[] dataToShow = new Object[]{ nameSupplierTF.getText(), addressSupplierTF.getText(), sTelephone};
+			tableModel.addRow(dataToShow);
 			supplierController.addSupplier(supplier);
+			nameSupplierTF.setText("");
+			addressSupplierTF.setText("");
+			telephoneSupplierTF.setText("");
+			// just to refresh data given from backend
+			
+			
 			
 		}
 		
 	}
+	
+	
+	
+	private List<Supplier> loadSupplierData(){
+		  System.out.print("start load supplier data");
+		  List<Supplier> allSupplierList = supplierController.getAllSupplier();
+		  System.out.println("Start getall supplier size : " + allSupplierList.size());
+		  return allSupplierList;
+		}
+		
 }
 
 
