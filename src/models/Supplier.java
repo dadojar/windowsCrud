@@ -69,5 +69,9 @@ public class Supplier {
 	public void setTelephone(Integer telephone) {
 		this.telephone = telephone;
 	}
+	
+	public String getTelephoneAsString() {
+		return String.valueOf(telephone);
+	}
 
 }

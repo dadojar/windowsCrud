@@ -15,6 +15,8 @@ import models.Supplier;
 
 import javax.swing.JTextField;
 import javax.swing.border.TitledBorder;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 
@@ -50,7 +52,8 @@ public class app {
 	private SupplierController supplierController;
 	private JTable table_1;
 	private JTable table;
-
+	private int indexSelectedRow;
+	
 	private DefaultTableModel tableModel;
 
 	/**
@@ -78,6 +81,12 @@ public class app {
 		initialize(loadSupplierData);
 	}
 
+	private List<Supplier> loadSupplierData(){
+		  System.out.print("start load supplier data");
+		  List<Supplier> allSupplierList = supplierController.getAllSupplier();
+		  System.out.println("Start getall supplier size : " + allSupplierList.size());
+		  return allSupplierList;
+		}
 	
 	
 
@@ -94,10 +103,28 @@ public class app {
 		frame.getContentPane().setBackground(SystemColor.inactiveCaptionBorder);
 		frame.getContentPane().setLayout(null);
 		
-		// populate table
-        populateTable(loadSupplierData);
+		// Start populate table
+        JScrollPane scrollPane = new JScrollPane();
+        scrollPane.setViewportBorder(UIManager.getBorder("CheckBoxMenuItem.border"));
+		scrollPane.setBounds(50, 80, 857, 268);
+		frame.getContentPane().add(scrollPane);
 		
-		// ******* CREATE
+		String colSupplier[] = {"Name","Address","Telephone"};
+		tableModel = new DefaultTableModel(colSupplier, 0);
+		table = new JTable(tableModel);
+		table.getTableHeader().setBackground(new Color (224,238,237));
+	
+		for(Supplier s: loadSupplierData ) {
+			String[] curr = { s.getName(), s.getAddress(),s.getTelephone()+""}; 
+			tableModel.addRow(curr);
+		}
+		scrollPane.setViewportView(table);
+		frame.setBounds(100, 100, 1000, 700);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		// End populate table
+		
+		
+		// Start field management
 		nameSupplierTF = new JTextField();
 		nameSupplierTF.setBounds(156, 415, 166, 19);
 		frame.getContentPane().add(nameSupplierTF);
@@ -127,46 +154,47 @@ public class app {
 		telephoneSupplierTF.setBounds(156, 502, 166, 19);
 		frame.getContentPane().add(telephoneSupplierTF);
 		telephoneSupplierTF.setColumns(10);
+		// ENd field management
 		
+		// Button Add implementation
 		JButton btnNewButton = new JButton("Add");
 		btnNewButton.addActionListener(new SupplierListener());
 		btnNewButton.setBounds(50, 558, 85, 21);
 		frame.getContentPane().add(btnNewButton);
 		
+		// Button Update implementation
+		JButton btnButtonUpdate = new JButton("Update");
+		btnButtonUpdate.addActionListener(new SupplierListener());
+		btnButtonUpdate.setBounds(200, 558, 85, 21);
+		frame.getContentPane().add(btnButtonUpdate);
+		
+		// Button Delete implementation
+		JButton btnButtonDelete = new JButton("Delete");
+		btnButtonDelete.addActionListener(new SupplierListener());
+		btnButtonDelete.setBounds(350, 558, 85, 21);
+		frame.getContentPane().add(btnButtonDelete);
+		
+		
+		// Select a row in a table and populate the text field
+        table.getSelectionModel().addListSelectionListener(new ListSelectionListener(){ 
+		@Override
+		public void valueChanged(ListSelectionEvent e) {
+			indexSelectedRow = table.getSelectedRow();
+            nameSupplierTF.setText((String)tableModel.getValueAt(indexSelectedRow, 0));
+            addressSupplierTF.setText((String)tableModel.getValueAt(indexSelectedRow, 1));
+            telephoneSupplierTF.setText((String)tableModel.getValueAt(indexSelectedRow, 2));
+			
+		}
+      });
+		
 		JLabel lblNewLabel_3 = new JLabel("Supplier management");
 		lblNewLabel_3.setHorizontalAlignment(SwingConstants.CENTER);
 		lblNewLabel_3.setFont(new Font("Comic Sans MS", Font.PLAIN, 20));
 		lblNewLabel_3.setBounds(350, 10, 219, 44);
-		frame.getContentPane().add(lblNewLabel_3);
-		
+		frame.getContentPane().add(lblNewLabel_3);	
 		
 	}
 
-	/**
-	 * @param populateTable
-	 */
-	private void populateTable(List<Supplier> loadSupplierData) {
-		// **** TABLE
-        JScrollPane scrollPane = new JScrollPane();
-        scrollPane.setViewportBorder(UIManager.getBorder("CheckBoxMenuItem.border"));
-       
-		scrollPane.setBounds(50, 80, 857, 268);
-		frame.getContentPane().add(scrollPane);
-		
-		String colSupplier[] = {"Name","Address","Telephone"};
-		tableModel = new DefaultTableModel(colSupplier, 0);
-		table = new JTable(tableModel);
-		table.getTableHeader().setBackground(new Color (224,238,237));
-	
-		for(Supplier s: loadSupplierData ) {
-			String[] curr = { s.getName(), s.getAddress(),s.getTelephone()+""}; 
-			tableModel.addRow(curr);
-		}
-		scrollPane.setViewportView(table);
-		frame.setBounds(100, 100, 1000, 700);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-	}
-	
 	
 	
 	class SupplierListener implements ActionListener{
@@ -177,6 +205,9 @@ public class app {
 			switch(ac) {
 			case "Add": 
 				addSupplier();
+			break;
+			case "Update": 
+				updateSupplier();
 			break;
 			}
 		}
@@ -193,22 +224,26 @@ public class app {
 			nameSupplierTF.setText("");
 			addressSupplierTF.setText("");
 			telephoneSupplierTF.setText("");
-			// just to refresh data given from backend
-			
-			
-			
+		}
+		
+		private void updateSupplier() {
+			// get old supplier from table without modification
+			Supplier oldSupplier = supplierController.getSupplier(tableModel.getValueAt(indexSelectedRow, 0).toString(),
+					tableModel.getValueAt(indexSelectedRow, 1).toString(), 
+					tableModel.getValueAt(indexSelectedRow, 2).toString());
+			Supplier supplierWithNewData = supplierController.updateSupplier(oldSupplier.getId(),nameSupplierTF.getText(), addressSupplierTF.getText(), telephoneSupplierTF.getText());
+			tableModel.removeRow(indexSelectedRow);
+			Object[] dataToShow = new Object[]{ supplierWithNewData.getName(), supplierWithNewData.getAddress(), supplierWithNewData.getTelephoneAsString()};
+			tableModel.addRow(dataToShow);
+			nameSupplierTF.setText("");
+			addressSupplierTF.setText("");
+			telephoneSupplierTF.setText("");
 		}
 		
 	}
 	
+
 	
-	
-	private List<Supplier> loadSupplierData(){
-		  System.out.print("start load supplier data");
-		  List<Supplier> allSupplierList = supplierController.getAllSupplier();
-		  System.out.println("Start getall supplier size : " + allSupplierList.size());
-		  return allSupplierList;
-		}
 		
 }
 
