@@ -5,6 +5,7 @@ import java.awt.EventQueue;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -179,13 +180,20 @@ public class app {
         table.getSelectionModel().addListSelectionListener(new ListSelectionListener(){ 
 		@Override
 		public void valueChanged(ListSelectionEvent e) {
+			//with after a delete action the valueIsAdjusting is false, so not go into the if to modified data that are in removing step
+			//from another thread locked
+			if(e.getValueIsAdjusting()) {
 			indexSelectedRow = table.getSelectedRow();
             nameSupplierTF.setText((String)tableModel.getValueAt(indexSelectedRow, 0));
             addressSupplierTF.setText((String)tableModel.getValueAt(indexSelectedRow, 1));
             telephoneSupplierTF.setText((String)tableModel.getValueAt(indexSelectedRow, 2));
-			
+			}
 		}
       });
+        
+      
+        
+        
 		
 		JLabel lblNewLabel_3 = new JLabel("Supplier management");
 		lblNewLabel_3.setHorizontalAlignment(SwingConstants.CENTER);
@@ -208,6 +216,9 @@ public class app {
 			break;
 			case "Update": 
 				updateSupplier();
+			break;
+			case "Delete": 
+				deleteSupplier();
 			break;
 			}
 		}
@@ -232,12 +243,23 @@ public class app {
 					tableModel.getValueAt(indexSelectedRow, 1).toString(), 
 					tableModel.getValueAt(indexSelectedRow, 2).toString());
 			Supplier supplierWithNewData = supplierController.updateSupplier(oldSupplier.getId(),nameSupplierTF.getText(), addressSupplierTF.getText(), telephoneSupplierTF.getText());
-			tableModel.removeRow(indexSelectedRow);
-			Object[] dataToShow = new Object[]{ supplierWithNewData.getName(), supplierWithNewData.getAddress(), supplierWithNewData.getTelephoneAsString()};
-			tableModel.addRow(dataToShow);
-			nameSupplierTF.setText("");
-			addressSupplierTF.setText("");
-			telephoneSupplierTF.setText("");
+			tableModel.setValueAt(supplierWithNewData.getName(), indexSelectedRow, 0);
+			tableModel.setValueAt(supplierWithNewData.getAddress(), indexSelectedRow, 1);
+			tableModel.setValueAt(supplierWithNewData.getTelephoneAsString(), indexSelectedRow, 2);
+
+		}
+		
+		private void deleteSupplier() {	
+			if(table.getSelectedRow() != -1) 
+            {
+			Supplier oldSupplier = supplierController.getSupplier(tableModel.getValueAt(indexSelectedRow, 0).toString(),
+					tableModel.getValueAt(indexSelectedRow, 1).toString(), 
+					tableModel.getValueAt(indexSelectedRow, 2).toString());
+			supplierController.delete(oldSupplier.getId());
+			tableModel.removeRow(table.getSelectedRow());
+			JOptionPane.showMessageDialog(null, "Deleted successfully");
+			
+		}
 		}
 		
 	}

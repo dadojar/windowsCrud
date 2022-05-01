@@ -93,6 +93,30 @@ public class SupplierController {
 		System.out.println("End update supplier");
 		return supplier;
 	}
+
+	public void delete(Integer id) {
+		System.out.println("Start Delete supplier controller");
+		EntityManager em = ENTITY_MANAGER_FACTOR.createEntityManager();
+		EntityTransaction transaction = null;
+		Supplier supplier = null;
+		
+		try {
+		transaction = em.getTransaction();
+		transaction.begin();
+		supplier = em.find(Supplier.class, id);
+		em.remove(supplier);
+		
+		transaction.commit();
+		} catch(Exception e) {
+			if (transaction != null) {
+				transaction.rollback();
+			}
+			e.printStackTrace();
+		}finally {
+			em.close();
+		}
+		
+	}
 	
 	
 	/*
